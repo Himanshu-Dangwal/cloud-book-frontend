@@ -11,6 +11,8 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup';
 
 function Register() {
+   
+    const HOST = "https://cloudb.onrender.com"
 
     const { showAlert } = useContext(AlertContext)
     const navigate = useNavigate()
@@ -39,7 +41,7 @@ function Register() {
         validationSchema: registerSchema,
         onSubmit: async (values) => {
             const {username, email, password} = values
-            const response = await fetch("http://localhost:8080/api/auth/createuser", {
+            const response = await fetch(`${HOST}/api/auth/createuser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

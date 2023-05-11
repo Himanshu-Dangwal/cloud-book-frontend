@@ -14,7 +14,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 
 function Login(props) {
-
+    const HOST = "https://cloudb.onrender.com"
     const location = useLocation()
     const navigate = useNavigate()
     const { showAlert } = useContext(AlertContext)
@@ -32,7 +32,7 @@ function Login(props) {
         },
         validationSchema: loginSchema,
         onSubmit: async (values) => {
-            const response = await fetch("http://localhost:8080/api/auth/login", {
+            const response = await fetch(`${HOST}/api/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
