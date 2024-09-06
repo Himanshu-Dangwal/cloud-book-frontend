@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { TextField, Button, InputAdornment, InputLabel, OutlinedInput, FormControl, IconButton, FormHelperText } from '@mui/material';
+import { TextField, Button, InputAdornment, InputLabel, OutlinedInput, FormControl, IconButton, FormHelperText, CircularProgress } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
@@ -11,12 +11,11 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup';
 
 function Register() {
-   
     const HOST = "https://cloudb.onrender.com"
-
     const { showAlert } = useContext(AlertContext)
     const navigate = useNavigate()
     const [showPassword, setShowPassword] = useState(false)
+    const [loading, setLoading] = useState(false)  // Loading state
 
     const handleClickShowPassword = () => {
         setShowPassword(!showPassword)
@@ -40,15 +39,17 @@ function Register() {
         },
         validationSchema: registerSchema,
         onSubmit: async (values) => {
-            const {username, email, password} = values
+            setLoading(true);  // Start loading when form is submitted
+            const { username, email, password } = values
             const response = await fetch(`${HOST}/api/auth/createuser`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({username, email, password})
+                body: JSON.stringify({ username, email, password })
             })
             const json = await response.json()
+            setLoading(false);  // Stop loading after response
             console.log(json)
             if (json.success) {
                 navigate("/login")
@@ -110,7 +111,19 @@ function Register() {
                                 <FormHelperText error={Boolean(touched.password && errors.password)} id="outlined-weight-helper-text">{touched.password && errors.password}</FormHelperText>
                             </FormControl>
                         </div>
-                        <Button type="submit" fullWidth size="large" className="mb-4" variant="contained" color="secondary" style={{ textTransform: "none", fontFamily: "'Poppins', sans-serif", fontSize: "1.1rem" }}>Register now</Button>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            size="large"
+                            className="mb-4"
+                            variant="contained"
+                            color="secondary"
+                            style={{ textTransform: "none", fontFamily: "'Poppins', sans-serif", fontSize: "1.1rem" }}
+                            disabled={loading}  // Disable button while loading
+                            startIcon={loading ? <CircularProgress size={24} color="inherit" /> : null}  // Show loader while loading
+                        >
+                            {loading ? "Registering..." : "Register now"}
+                        </Button>
                     </form>
                     <p>Have an account? <Link to="/login" >login</Link> </p>
                 </div>
